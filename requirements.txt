@@ -1,0 +1,5 @@
+crawl4ai>=0.6.3
+plyer>=2.1.0
+asyncio>=3.4.3
+logging>=0.4.9.6
+playwright>=1.40.0
