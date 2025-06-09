@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  amazon-price-monitor:
+    build: 
+      context: .
+      dockerfile: Dockerfile.pi
+    container_name: price-monitor-web
+    restart: unless-stopped
+    
+    # Expose to local network
+    ports:
+      - "8000:8000"
+    
+    # Mount config and data volumes
+    volumes:
+      - ./config.json:/app/config.json
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - price-history:/app/price_history.json
+    
+    # Environment variables
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOST=0.0.0.0
+      - PORT=8000
+      - CORS_ORIGINS=http://*:3000,http://*:8000,http://192.168.*.*:*,http://10.*.*.*:*
+    
+    # For ARM-based Raspberry Pi
+    platform: linux/arm64  # Use linux/arm/v7 for Pi 3 or older
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/status"]
+      interval: 2m
+      timeout: 30s
+      retries: 3
+      start_period: 1m
+
+  # Optional: Add nginx reverse proxy for better performance
+  nginx:
+    image: nginx:alpine
+    container_name: price-monitor-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - amazon-price-monitor
+    profiles:
+      - proxy
+
+volumes:
+  price-history:

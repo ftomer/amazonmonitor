@@ -13,6 +13,12 @@ A Python application that monitors Amazon product prices and sends notifications
 
 ## 🚀 Quick Start
 
+## On RasPi
+```bash
+hostname -I  # On the Pi
+```
+# Or check your router's device list
+
 ### Local Installation
 
 1. **Clone and setup:**
