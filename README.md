@@ -13,6 +13,15 @@ A Python application that monitors Amazon product prices and sends notifications
 
 ## 🚀 Quick Start
 
+## Create .env file with:
+
+# Email Notifications
+SMTP_SENDER_EMAIL=
+SMTP_SENDER_PASSWORD=
+SMTP_RECIPIENT_EMAIL=
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+
 ## On RasPi
 ```bash
 hostname -I  # On the Pi
@@ -80,14 +89,6 @@ Edit `config.json` to customize your monitoring:
     ],
     "check_interval_minutes": 60,
     "email_notifications": {
-        "enabled": true,
-        "smtp_server": "smtp.gmail.com",
-        "smtp_port": 587,
-        "sender_email": "your_email@gmail.com",
-        "sender_password": "your_app_password",
-        "recipient_email": "recipient@gmail.com"
-    },
-    "desktop_notifications": {
         "enabled": true
     }
 }
@@ -103,26 +104,90 @@ For Gmail notifications:
 
 ### 🔔 Notification Types
 
-- **Desktop Notifications**: Native system notifications (requires `plyer`)
 - **Email Alerts**: SMTP email notifications
-- **Webhook Support**: Slack/Discord webhooks (Docker config)
 
 ## 📁 Project Structure
 
 ```
 amazon-price-monitor/
-├── amazon_price_monitor.py    # Main application
-├── config.json               # Your configuration (not in git)
-├── config.example.json       # Configuration template
-├── requirements.txt          # Python dependencies
-├── requirements-docker.txt   # Docker-specific requirements
-├── Dockerfile               # Docker image definition
-├── docker-compose.yml       # Docker Compose setup
-├── setup.sh                # Raspberry Pi setup script
-├── .gitignore              # Git ignore rules
-├── price_monitor.log       # Application logs
-├── price_history.json      # Historical price data
-└── README.md              # This file
+├── README.md
+├── .env.example
+├── .env                    # Your actual environment variables
+├── .gitignore
+├── requirements.txt
+├── docker-compose.yml
+├── Dockerfile
+├── setup.py               # Package setup
+│
+├── app/                   # Main application package
+│   ├── __init__.py
+│   ├── main.py           # FastAPI app entry point
+│   ├── config.py         # Configuration management
+│   ├── dependencies.py   # FastAPI dependencies
+│   │
+│   ├── api/              # API routes
+│   │   ├── __init__.py
+│   │   ├── deps.py       # API dependencies
+│   │   └── v1/           # API version 1
+│   │       ├── __init__.py
+│   │       ├── api.py    # Main API router
+│   │       └── endpoints/
+│   │           ├── __init__.py
+│   │           ├── products.py
+│   │           ├── monitoring.py
+│   │           └── status.py
+│   │
+│   ├── core/             # Core business logic
+│   │   ├── __init__.py
+│   │   ├── config.py     # Settings and configuration
+│   │   ├── security.py   # Security utilities
+│   │   └── logging.py    # Logging configuration
+│   │
+│   ├── models/           # Pydantic models
+│   │   ├── __init__.py
+│   │   ├── product.py
+│   │   ├── monitoring.py
+│   │   └──
+│   │
+│   ├── services/         # Business logic services
+│   │   ├── __init__.py
+│   │   ├── price_monitor.py    # Main monitoring service
+│   │   ├── notification.py     # Notification service
+│   │   └── price_extractor.py  # Price extraction service
+│   │
+│   └── utils/            # Utility functions
+│       ├── __init__.py
+│       ├── 
+│       └── exceptions.py
+│
+├── frontend/             # React frontend
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   └── ...
+│
+├── tests/                # Test files
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_api/
+│   ├── test_services/
+│   └── test_utils/
+│
+├── scripts/              # Utility scripts
+│   ├── 
+│   ├── 
+│   └── 
+│
+├── data/                 # Data directory
+│   ├── config.json
+│   ├── price_history.json
+│   └── logs/
+│       └── app.log
+│
+└── docs/                 # Documentation
+    ├── 
+    ├── 
+    └── 
 ```
 
 ## 🐳 Docker Deployment
@@ -194,15 +259,6 @@ Add multiple products to monitor in `config.json`:
 "check_interval_minutes": 120  // Check every 2 hours
 ```
 
-### Webhook Notifications
-Add webhook support for Slack/Discord:
-```json
-"webhook_notifications": {
-    "enabled": true,
-    "slack_webhook": "https://hooks.slack.com/services/...",
-    "discord_webhook": "https://discord.com/api/webhooks/..."
-}
-```
 
 ## 🛠️ Troubleshooting
 

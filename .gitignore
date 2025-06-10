@@ -23,6 +23,11 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+.env
+/app/.env
+email.txt
+backup/
+
 # Virtual Environment
 venv/
 env/

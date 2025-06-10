@@ -31,7 +31,7 @@ services:
     
     # Health check
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/status"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/status"]
       interval: 2m
       timeout: 30s
       retries: 3

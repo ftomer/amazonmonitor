@@ -8,12 +8,7 @@
     ],
     "check_interval_minutes": 60,
     "email_notifications": {
-        "enabled": false,
-        "smtp_server": "smtp.gmail.com",
-        "smtp_port": 587,
-        "sender_email": "YOUR_EMAIL@gmail.com",
-        "sender_password": "YOUR_APP_PASSWORD",
-        "recipient_email": "RECIPIENT@gmail.com"
+        "enabled": false
     },
     "desktop_notifications": {
         "enabled": true

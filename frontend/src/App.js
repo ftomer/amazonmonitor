@@ -9,7 +9,6 @@ import {
   Settings, 
   Activity,
   RefreshCw,
-  Mail,
   Bell,
   ExternalLink,
   TrendingDown,
@@ -20,7 +19,7 @@ import {
 } from 'lucide-react';
 
 // Use environment variable or fallback for API base URL
-const API_BASE = process.env.REACT_APP_API_URL || '/api';
+const API_BASE = process.env.REACT_APP_API_URL || '/api/v1';
 
 const PriceMonitorApp = () => {
   const [status, setStatus] = useState({ is_running: false, total_products: 0 });
@@ -62,7 +61,7 @@ const PriceMonitorApp = () => {
   // Fetch data functions with error handling
   const fetchStatus = async () => {
     try {
-      const data = await apiCall('/status');
+      const data = await apiCall('/status/');
       setStatus(data);
       setConnectionStatus('connected');
       setError(null);
@@ -73,7 +72,7 @@ const PriceMonitorApp = () => {
 
   const fetchProducts = async () => {
     try {
-      const data = await apiCall('/products');
+      const data = await apiCall('/products/');
       setProducts(data);
     } catch (error) {
       // Handle error silently if already displayed
@@ -82,7 +81,7 @@ const PriceMonitorApp = () => {
 
   const fetchConfig = async () => {
     try {
-      const data = await apiCall('/config');
+      const data = await apiCall('/config/');
       setConfig(data);
     } catch (error) {
       // Handle error silently if already displayed
@@ -91,7 +90,7 @@ const PriceMonitorApp = () => {
 
   const fetchPriceHistory = async () => {
     try {
-      const data = await apiCall('/price-history');
+      const data = await apiCall('/monitor/price-history/');
       setPriceHistory(data);
     } catch (error) {
       // Handle error silently
@@ -100,7 +99,7 @@ const PriceMonitorApp = () => {
 
   const fetchLogs = async () => {
     try {
-      const data = await apiCall('/logs?lines=50');
+      const data = await apiCall('/monitor/logs/?lines=50');
       setLogs(data.logs || []);
     } catch (error) {
       // Handle error silently
@@ -111,7 +110,7 @@ const PriceMonitorApp = () => {
   const toggleMonitoring = async () => {
     setLoading(true);
     try {
-      const endpoint = status.is_running ? '/monitor/stop' : '/monitor/start';
+      const endpoint = status.is_running ? '/monitor/stop/' : '/monitor/start/';
       await apiCall(endpoint, { method: 'POST' });
       await fetchStatus();
       setError(null);
@@ -124,8 +123,8 @@ const PriceMonitorApp = () => {
   const checkPricesNow = async () => {
     setLoading(true);
     try {
-      const data = await apiCall('/check-now', { method: 'POST' });
-      setLastCheck(data.results);
+      const data = await apiCall('/monitor/check-now/', { method: 'POST' });
+      setLastCheck(data.results || data);
       await fetchPriceHistory();
       setError(null);
     } catch (error) {
@@ -136,7 +135,7 @@ const PriceMonitorApp = () => {
 
   const addProduct = async (product) => {
     try {
-      await apiCall('/products', {
+      await apiCall('/products/', {
         method: 'POST',
         body: JSON.stringify(product)
       });
@@ -235,7 +234,7 @@ const PriceMonitorApp = () => {
     status: { is_running: false, total_products: 2 },
     products: [
       {
-        name: "Echo Dot (3rd Gen) - Mock Data",
+        name: "Echo Dot - Mock Data",
         url: "https://www.amazon.com/gp/product/B0757911C2/",
         target_price: 30.00
       },
@@ -246,7 +245,7 @@ const PriceMonitorApp = () => {
       }
     ],
     config: {
-      check_interval_minutes: 60,
+      check_interval_minutes: 240,
       email_notifications: { email_enabled: false, desktop_enabled: true }
     }
   } : { status, products, config };
@@ -284,7 +283,7 @@ const PriceMonitorApp = () => {
           </span>
         </div>
         
-        {lastCheck.find && lastCheck.find(check => check.name === product.name) && (
+        {lastCheck && lastCheck.find && lastCheck.find(check => check.name === product.name) && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">Current Price:</span>
             <span className="text-lg font-bold text-blue-600">
@@ -433,9 +432,9 @@ const PriceMonitorApp = () => {
           <div className="flex items-center">
             <Bell className="h-8 w-8 text-yellow-500" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Notifications</p>
+              <p className="text-sm font-medium text-gray-600">Email Notifications</p>
               <p className="text-lg font-semibold">
-                {mockData.config?.email_notifications?.email_enabled ? 'Email' : 'Desktop'}
+                {mockData.config?.email_notifications?.email_enabled ? 'Enabled' : 'Disabled'}
               </p>
             </div>
           </div>
@@ -481,7 +480,7 @@ const PriceMonitorApp = () => {
       </div>
 
       {/* Recent Check Results */}
-      {lastCheck.length > 0 && (
+      {lastCheck && lastCheck.length > 0 && (
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
           <h3 className="text-lg font-semibold mb-4">Last Price Check</h3>
           <div className="space-y-3">
