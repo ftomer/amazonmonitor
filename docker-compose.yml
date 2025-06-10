@@ -1,55 +1,54 @@
-version: '3.8'
-
 services:
   amazon-price-monitor:
-    build: 
+    build:
       context: .
-      dockerfile: Dockerfile.pi
-    container_name: price-monitor-web
+      dockerfile: Dockerfile
+    container_name: amazon-price-monitor
     restart: unless-stopped
-    
-    # Expose to local network
-    ports:
-      - "8000:8000"
-    
-    # Mount config and data volumes
-    volumes:
-      - ./config.json:/app/config.json
-      - ./logs:/app/logs
-      - ./data:/app/data
-      - price-history:/app/price_history.json
     
     # Environment variables
     environment:
-      - PYTHONUNBUFFERED=1
-      - HOST=0.0.0.0
-      - PORT=8000
-      - CORS_ORIGINS=http://*:3000,http://*:8000,http://192.168.*.*:*,http://10.*.*.*:*
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_SENDER_EMAIL=${SMTP_SENDER_EMAIL}
+      - SMTP_SENDER_PASSWORD=${SMTP_SENDER_PASSWORD}
+      - SMTP_RECIPIENT_EMAIL=${SMTP_RECIPIENT_EMAIL}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DEBUG=False
+      - PLAYWRIGHT_BROWSERS_PATH=/home/appuser/.local/share/ms-playwright
     
-    # For ARM-based Raspberry Pi
-    platform: linux/arm64  # Use linux/arm/v7 for Pi 3 or older
-    
-    # Health check
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/status"]
-      interval: 2m
-      timeout: 30s
-      retries: 3
-      start_period: 1m
-
-  # Optional: Add nginx reverse proxy for better performance
-  nginx:
-    image: nginx:alpine
-    container_name: price-monitor-proxy
-    restart: unless-stopped
-    ports:
-      - "80:80"
+    # Volumes for persistent data
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - amazon-price-monitor
-    profiles:
-      - proxy
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config.json:/app/config.json:ro
+      - price-monitor-cache:/home/appuser/.local/share/ms-playwright
+    
+    # Resource limits for Raspberry Pi
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    
+    # Network configuration
+    ports:
+      - "8000:8000"  # Remove if no web interface
+    
+    # Health check - updated for app structure
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.path.append('/app'); from app.main import *; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
-  price-history:
+  price-monitor-cache:

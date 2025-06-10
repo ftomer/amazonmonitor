@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     HOST: str = "0.0.0.0"
     PORT: int = 8000
-    DEBUG: bool = True
+    DEBUG: bool = False  # Set to False for production
     LOG_LEVEL: str = "INFO"
     
     # CORS settings

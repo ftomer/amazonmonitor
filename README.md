@@ -223,6 +223,9 @@ docker-compose down
 - Monitor resource usage: `docker stats`
 - Logs are persistent in `./logs/` directory
 
+
+
+
 ## 📊 Monitoring & Logs
 
 ### Log Files
@@ -324,3 +327,5 @@ This tool is for personal use only. Please respect Amazon's terms of service and
 ---
 
 **Happy deal hunting! 🎯**
+
+
