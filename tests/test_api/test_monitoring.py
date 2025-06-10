@@ -1,8 +1,11 @@
 """
 Tests for monitoring API endpoints
+
+
+run with:
+python -m pytest tests/test_api/test_monitoring.py -v
 """
 
-import pytest
 from unittest.mock import AsyncMock, patch
 from fastapi.testclient import TestClient
 

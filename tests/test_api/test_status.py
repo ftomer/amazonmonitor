@@ -2,12 +2,10 @@
 Tests for status API endpoints
 
 run with:
-pytest tests/test_api/test_status.py -v
+python -m pytest tests/test_api/test_status.py -v
 """
 
-import pytest
 from fastapi.testclient import TestClient
-from httpx import AsyncClient
 
 
 class TestStatusAPI:

@@ -1,5 +1,8 @@
 """
 Tests for PriceExtractor service
+
+run with:
+python -m pytest tests/test_services/test_price_extractor.py -v
 """
 
 import pytest
@@ -79,6 +82,7 @@ class TestPriceExtractor:
         result = extractor._extract_price_from_html(html_content)
         assert result is None
     
+    @pytest.mark.asyncio
     @patch('app.services.price_extractor.AsyncWebCrawler')
     async def test_extract_price_success_structured(self, mock_crawler_class, extractor):
         """Test successful price extraction using structured data"""
@@ -99,6 +103,7 @@ class TestPriceExtractor:
         assert result == 29.99
         mock_crawler.arun.assert_called_once()
     
+    @pytest.mark.asyncio
     @patch('app.services.price_extractor.AsyncWebCrawler')
     async def test_extract_price_success_html_fallback(self, mock_crawler_class, extractor):
         """Test successful price extraction using HTML fallback"""
@@ -117,6 +122,7 @@ class TestPriceExtractor:
         
         assert result == 45.0
     
+    @pytest.mark.asyncio
     @patch('app.services.price_extractor.AsyncWebCrawler')
     async def test_extract_price_crawl_failure(self, mock_crawler_class, extractor):
         """Test price extraction when crawling fails"""
@@ -132,6 +138,7 @@ class TestPriceExtractor:
         
         assert result is None
     
+    @pytest.mark.asyncio
     @patch('app.services.price_extractor.AsyncWebCrawler')
     async def test_extract_price_exception(self, mock_crawler_class, extractor):
         """Test price extraction when an exception occurs"""
@@ -144,6 +151,7 @@ class TestPriceExtractor:
         
         assert result is None
     
+    @pytest.mark.asyncio
     @patch('app.services.price_extractor.AsyncWebCrawler')
     async def test_extract_price_with_retries(self, mock_crawler_class, extractor):
         """Test price extraction with retries"""
@@ -183,3 +191,40 @@ class TestPriceExtractor:
         for html, expected in test_cases:
             result = extractor._extract_price_from_html(html)
             assert result == expected, f"Failed for HTML: {html}"
+    
+    @pytest.mark.asyncio
+    async def test_extract_price_invalid_url(self, extractor):
+        """Test price extraction with invalid URL"""
+        invalid_url = "not-a-valid-url"
+        result = await extractor.extract_price(invalid_url)
+        
+        # Should handle invalid URLs gracefully
+        assert result is None
+    
+    @pytest.mark.asyncio
+    async def test_extract_price_empty_url(self, extractor):
+        """Test price extraction with empty URL"""
+        empty_url = ""
+        result = await extractor.extract_price(empty_url)
+        
+        # Should handle empty URLs gracefully
+        assert result is None
+    
+    @pytest.mark.asyncio
+    @patch('app.services.price_extractor.AsyncWebCrawler')
+    async def test_extract_price_partial_html_content(self, mock_crawler_class, extractor):
+        """Test price extraction with partial HTML content"""
+        mock_result = MagicMock()
+        mock_result.success = True
+        mock_result.extracted_content = None
+        mock_result.html = '<div>Some content without price</div>'
+        
+        mock_crawler = AsyncMock()
+        mock_crawler.arun.return_value = mock_result
+        mock_crawler_class.return_value.__aenter__.return_value = mock_crawler
+        
+        url = "https://www.amazon.com/test-product/dp/B123456789"
+        result = await extractor.extract_price(url)
+        
+        # Should return None when no price is found in HTML
+        assert result is None

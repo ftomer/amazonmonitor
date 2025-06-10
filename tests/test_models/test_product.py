@@ -1,5 +1,8 @@
 """
 Tests for Product models
+
+run with:
+python -m pytest tests/test_models/test_product.py -v
 """
 
 import pytest
@@ -117,8 +120,8 @@ class TestProductModels:
         assert product_create.url == product.url
         assert product_create.target_price == product.target_price
     
-    def test_product_json_serialization(self):
-        """Test JSON serialization of product models"""
+    def test_product_json_serialization_with_mode(self):
+        """Test JSON serialization with string mode for URLs"""
         product_data = {
             "name": "JSON Test Product",
             "url": "https://www.amazon.com/json-test/dp/B222222222",
@@ -126,7 +129,7 @@ class TestProductModels:
         }
         
         product = Product(**product_data)
-        json_data = product.dict()
+        json_data = product.model_dump(mode='json')
         
         assert json_data["name"] == "JSON Test Product"
         assert json_data["url"] == "https://www.amazon.com/json-test/dp/B222222222"

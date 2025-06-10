@@ -2,14 +2,21 @@
 
 A Python application that monitors Amazon product prices and sends notifications when prices drop below your target thresholds. Built with Crawl4AI for reliable price extraction and supports multiple notification methods.
 
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+
 ## ✨ Features
 
-- **Smart Price Extraction**: Uses Crawl4AI with multiple fallback methods for reliable Amazon price scraping
-- **Multiple Notification Types**: Desktop notifications, email alerts, and webhook support
+- **Smart Price Extraction**:  Crawl4AI for Amazon price scraping
+- **Notification**: email alerts
 - **Price History Tracking**: Maintains historical price data with timestamps
 - **Continuous Monitoring**: Runs in background with configurable check intervals
 - **Docker Support**: Ready-to-run Docker container for Raspberry Pi and other platforms
-- **Cross-Platform**: Works on Windows, macOS, Linux, and Raspberry Pi
+
+![alt text](image-2.png)
 
 ## 🚀 Quick Start
 
@@ -59,8 +66,8 @@ python amazon_price_monitor.py
 
 1. **Setup:**
 ```bash
-chmod +x setup.sh
-./setup.sh
+chmod +x setup-pi.sh
+./setup-pi.sh
 ```
 
 2. **Configure and run:**

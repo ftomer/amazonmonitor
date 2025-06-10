@@ -1,8 +1,10 @@
 """
 Tests for products API endpoints
+
+run with:
+python -m pytest tests/test_api/test_products.py -v
 """
 
-import pytest
 from fastapi.testclient import TestClient
 
 

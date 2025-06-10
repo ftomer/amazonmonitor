@@ -81,7 +81,7 @@ const PriceMonitorApp = () => {
 
   const fetchConfig = async () => {
     try {
-      const data = await apiCall('/config/');
+      const data = await apiCall('/config');
       setConfig(data);
     } catch (error) {
       // Handle error silently if already displayed
@@ -90,7 +90,7 @@ const PriceMonitorApp = () => {
 
   const fetchPriceHistory = async () => {
     try {
-      const data = await apiCall('/monitor/price-history/');
+      const data = await apiCall('/monitor/price-history');
       setPriceHistory(data);
     } catch (error) {
       // Handle error silently
