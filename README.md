@@ -2,11 +2,9 @@
 
 A Python application that monitors Amazon product prices and sends notifications when prices drop below your target thresholds. Built with Crawl4AI for reliable price extraction and supports multiple notification methods.
 
-
 ![alt text](image.png)
 
 ![alt text](image-1.png)
-
 
 ## ✨ Features
 
@@ -20,9 +18,10 @@ A Python application that monitors Amazon product prices and sends notifications
 
 ## 🚀 Quick Start
 
-## Create .env file with:
+## Create .env file with
 
 # Email Notifications
+
 SMTP_SENDER_EMAIL=
 SMTP_SENDER_PASSWORD=
 SMTP_RECIPIENT_EMAIL=
@@ -30,14 +29,17 @@ SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 
 ## On RasPi
+
 ```bash
 hostname -I  # On the Pi
 ```
+
 # Or check your router's device list
 
 ### Local Installation
 
 1. **Clone and setup:**
+
 ```bash
 git clone <your-repo-url>
 cd amazon-price-monitor
@@ -46,18 +48,21 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 2. **Install dependencies:**
+
 ```bash
 pip install -r requirements.txt
 playwright install
 ```
 
 3. **Configure your products:**
+
 ```bash
 cp config.example.json config.json
 # Edit config.json with your product URLs and notification settings
 ```
 
 4. **Run the monitor:**
+
 ```bash
 python amazon_price_monitor.py
 ```
@@ -65,18 +70,21 @@ python amazon_price_monitor.py
 ### Docker Installation (Recommended for Raspberry Pi)
 
 1. **Setup:**
+
 ```bash
 chmod +x setup-pi.sh
 ./setup-pi.sh
 ```
 
 2. **Configure and run:**
+
 ```bash
 # Edit config.json with your settings
 docker-compose up -d
 ```
 
 3. **Monitor logs:**
+
 ```bash
 docker-compose logs -f
 ```
@@ -202,6 +210,7 @@ amazon-price-monitor/
 Perfect for running 24/7 on a Raspberry Pi or server:
 
 ### Build and Run
+
 ```bash
 # Build image
 docker-compose build
@@ -223,17 +232,16 @@ docker-compose down
 - Monitor resource usage: `docker stats`
 - Logs are persistent in `./logs/` directory
 
-
-
-
 ## 📊 Monitoring & Logs
 
 ### Log Files
+
 - **Application logs**: `price_monitor.log`
 - **Price history**: `price_history.json`
 - **Docker logs**: `docker-compose logs`
 
 ### Health Checks
+
 ```bash
 # Check if container is healthy
 docker-compose ps
@@ -248,7 +256,9 @@ docker-compose logs -f amazon-price-monitor
 ## 🔧 Advanced Usage
 
 ### Multiple Products
+
 Add multiple products to monitor in `config.json`:
+
 ```json
 "products": [
     {
@@ -265,38 +275,44 @@ Add multiple products to monitor in `config.json`:
 ```
 
 ### Custom Check Intervals
+
 ```json
 "check_interval_minutes": 120  // Check every 2 hours
 ```
-
 
 ## 🛠️ Troubleshooting
 
 ### Common Issues
 
 **Playwright Browser Error:**
+
 ```bash
 playwright install
 ```
 
 **Permission Denied (Docker):**
+
 ```bash
 sudo usermod -aG docker $USER
 # Log out and back in
 ```
 
 **Price Extraction Fails:**
+
 - Check if Amazon URL is accessible
 - Verify product page format hasn't changed
 - Check logs for specific error messages
 
 **Email Notifications Not Working:**
+
 - Verify SMTP settings
 - Use app passwords for Gmail
 - Check firewall settings
 
 ### Debug Mode
+
 Add verbose logging:
+
 ```python
 logging.basicConfig(level=logging.DEBUG)
 ```
@@ -327,5 +343,3 @@ This tool is for personal use only. Please respect Amazon's terms of service and
 ---
 
 **Happy deal hunting! 🎯**
-
-

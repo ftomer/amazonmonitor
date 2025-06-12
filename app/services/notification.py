@@ -4,8 +4,6 @@ Notification service for price alerts
 
 import os
 import smtplib
-import subprocess
-import platform
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
